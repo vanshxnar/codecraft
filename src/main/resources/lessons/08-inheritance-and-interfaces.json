@@ -1,0 +1,13 @@
+{
+	"id": "inheritance-and-interfaces",
+	"order": 8,
+	"title": "Inheritance & Interfaces",
+	"topic": "Object-oriented programming",
+	"explanation": [
+		"A class can extend another class to inherit its fields and methods, then override a method to change its behavior -- this is polymorphism.",
+		"An interface declares a set of methods without implementing them; any class can implement it as a promise: 'I provide these methods.'",
+		"Below, two different Builder implementations both get called through the same interface type -- the loop doesn't need to know which one it's talking to."
+	],
+	"starterCode": "public class Lesson {\n    interface Builder {\n        void build(int originX, int originZ);\n    }\n\n    static class TowerBuilder implements Builder {\n        public void build(int originX, int originZ) {\n            for (int y = 0; y < 4; y++) {\n                Playground.placeBlock(originX, y, originZ, \"stone_bricks\");\n            }\n        }\n    }\n\n    static class PillarBuilder implements Builder {\n        public void build(int originX, int originZ) {\n            for (int y = 0; y < 2; y++) {\n                Playground.placeBlock(originX, y, originZ, \"oak_log\");\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Builder[] builders = { new TowerBuilder(), new PillarBuilder() };\n        int x = 2;\n        for (Builder builder : builders) {\n            builder.build(x, 0);\n            x += 2;\n        }\n        Playground.say(\"Done building!\");\n    }\n}\n",
+	"usesPlayground": true
+}

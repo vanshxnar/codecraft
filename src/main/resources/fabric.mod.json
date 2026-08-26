@@ -1,0 +1,27 @@
+{
+	"schemaVersion": 1,
+	"id": "codecraft",
+	"version": "${version}",
+	"name": "CodeCraft",
+	"description": "Learn Java inside Minecraft: an in-game code editor with live, world-visible examples.",
+	"authors": [
+		"CodeCraft"
+	],
+	"license": "MIT",
+	"icon": "assets/codecraft/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.codecraft.CodeCraftMod"
+		],
+		"client": [
+			"dev.codecraft.client.CodeCraftModClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"id": "conditionals",
+	"order": 3,
+	"title": "Conditionals",
+	"topic": "Control flow",
+	"explanation": [
+		"if/else lets your program make decisions. The code inside an if block only runs when its condition is true.",
+		"Comparisons use ==, !=, <, >, <=, >=. Combine conditions with && (and) and || (or).",
+		"Try changing 'health' below and see how the printed message changes -- then add another else-if branch of your own."
+	],
+	"starterCode": "public class Lesson {\n    public static void main(String[] args) {\n        int health = 6;\n\n        if (health <= 0) {\n            System.out.println(\"You died.\");\n        } else if (health < 10) {\n            System.out.println(\"Low health -- find some food!\");\n        } else {\n            System.out.println(\"You're doing fine.\");\n        }\n    }\n}\n",
+	"usesPlayground": false
+}

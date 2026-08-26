@@ -1,0 +1,13 @@
+{
+	"id": "variables",
+	"order": 2,
+	"title": "Variables & Types",
+	"topic": "Basics",
+	"explanation": [
+		"Java is statically typed: every variable has a fixed type declared up front. The common primitive types are int (whole numbers), double (decimals), boolean (true/false), and char (a single character); String holds text.",
+		"Declare a variable as: type name = value;  For example: int health = 20;",
+		"Try adding a few variables of your own below and printing them. String + anything concatenates it into text, e.g. System.out.println(\"health: \" + health)."
+	],
+	"starterCode": "public class Lesson {\n    public static void main(String[] args) {\n        int health = 20;\n        double speed = 4.317;\n        boolean isDaytime = true;\n        String biome = \"plains\";\n\n        System.out.println(\"health: \" + health);\n        System.out.println(\"speed: \" + speed);\n        System.out.println(\"isDaytime: \" + isDaytime);\n        System.out.println(\"biome: \" + biome);\n    }\n}\n",
+	"usesPlayground": false
+}

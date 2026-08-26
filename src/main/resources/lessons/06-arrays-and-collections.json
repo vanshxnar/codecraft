@@ -1,0 +1,13 @@
+{
+	"id": "arrays-and-collections",
+	"order": 6,
+	"title": "Arrays & Collections",
+	"topic": "Data structures",
+	"explanation": [
+		"An array holds a fixed number of values of one type: String[] items = {\"a\", \"b\", \"c\"};  Access with items[0], length with items.length.",
+		"ArrayList (from java.util) is a resizable list -- add(), get(index), size(), and remove() let it grow and shrink at runtime.",
+		"The for-each loop (for (String item : items)) walks every element without needing an index. Try it on both the array and the list below."
+	],
+	"starterCode": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Lesson {\n    public static void main(String[] args) {\n        String[] hotbar = { \"sword\", \"pickaxe\", \"torch\" };\n        for (String item : hotbar) {\n            System.out.println(\"Slot: \" + item);\n        }\n\n        List<String> inventory = new ArrayList<>();\n        inventory.add(\"cobblestone\");\n        inventory.add(\"oak_log\");\n        inventory.add(\"cobblestone\");\n        System.out.println(\"Inventory size: \" + inventory.size());\n        System.out.println(inventory);\n    }\n}\n",
+	"usesPlayground": false
+}

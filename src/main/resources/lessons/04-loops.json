@@ -1,0 +1,13 @@
+{
+	"id": "loops",
+	"order": 4,
+	"title": "Loops",
+	"topic": "Control flow",
+	"explanation": [
+		"A for loop repeats a block of code a set number of times: for (int i = 0; i < 5; i++) { ... } runs with i = 0,1,2,3,4.",
+		"A while loop repeats as long as a condition stays true -- useful when you don't know the count in advance.",
+		"Loops are what make lesson 9's capstone possible: a five-line for loop can place hundreds of blocks. Try changing the loop bound below."
+	],
+	"starterCode": "public class Lesson {\n    public static void main(String[] args) {\n        for (int i = 1; i <= 5; i++) {\n            System.out.println(\"Torch #\" + i + \" placed.\");\n        }\n\n        int count = 3;\n        while (count > 0) {\n            System.out.println(\"Countdown: \" + count);\n            count--;\n        }\n        System.out.println(\"Go!\");\n    }\n}\n",
+	"usesPlayground": false
+}

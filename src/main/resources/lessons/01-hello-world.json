@@ -1,0 +1,13 @@
+{
+	"id": "hello-world",
+	"order": 1,
+	"title": "Hello, World!",
+	"topic": "Basics",
+	"explanation": [
+		"Every Java program starts somewhere. That somewhere is a method called main -- the JVM looks for exactly this signature and runs it first: public static void main(String[] args).",
+		"Inside main, System.out.println(...) prints a line of text to the console below. Try changing the message and hit Run.",
+		"Notice the console pane updates live as your program runs -- that's the workflow you'll use for every lesson from here on."
+	],
+	"starterCode": "public class Lesson {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\");\n    }\n}\n",
+	"usesPlayground": false
+}

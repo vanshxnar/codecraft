@@ -1,0 +1,13 @@
+{
+	"id": "capstone-build-a-house",
+	"order": 10,
+	"title": "Capstone: Build a House",
+	"topic": "Putting it together",
+	"explanation": [
+		"This lesson combines everything: loops to repeat work, methods to organize it, and Playground to make it real. Hit Run and watch a house appear around you block by block.",
+		"Read through wall(), floor() and roof() below, then try changing the size, the block types, or adding a door gap.",
+		"This is the pattern for everything you build from here: think in loops over coordinates, and let a method do the placing."
+	],
+	"starterCode": "public class Lesson {\n    static final int SIZE = 5;\n    static final int HEIGHT = 4;\n\n    static void floor(String block) {\n        for (int x = 0; x < SIZE; x++) {\n            for (int z = 0; z < SIZE; z++) {\n                Playground.placeBlock(x, 0, z, block);\n            }\n        }\n    }\n\n    static void walls(String block) {\n        for (int y = 1; y <= HEIGHT; y++) {\n            for (int x = 0; x < SIZE; x++) {\n                Playground.placeBlock(x, y, 0, block);\n                Playground.placeBlock(x, y, SIZE - 1, block);\n            }\n            for (int z = 0; z < SIZE; z++) {\n                Playground.placeBlock(0, y, z, block);\n                Playground.placeBlock(SIZE - 1, y, z, block);\n            }\n        }\n    }\n\n    static void roof(String block) {\n        for (int x = 0; x < SIZE; x++) {\n            for (int z = 0; z < SIZE; z++) {\n                Playground.placeBlock(x, HEIGHT + 1, z, block);\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        Playground.say(\"Building a house...\");\n        floor(\"oak_planks\");\n        walls(\"cobblestone\");\n        roof(\"oak_slab\");\n        Playground.placeBlock(2, 1, 0, \"air\");\n        Playground.placeBlock(2, 2, 0, \"air\");\n        Playground.particles(2, 2, 2, \"happy_villager\", 30);\n        Playground.giveItem(\"diamond\", 5);\n        Playground.say(\"Done! Walk in through the gap. Here's 5 diamonds for your trouble.\");\n    }\n}\n",
+	"usesPlayground": true
+}

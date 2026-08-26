@@ -1,0 +1,13 @@
+{
+	"id": "classes-and-objects",
+	"order": 7,
+	"title": "Classes & Objects",
+	"topic": "Object-oriented programming",
+	"explanation": [
+		"A class is a blueprint; an object is an instance of it. Fields hold an object's data, a constructor sets it up, and methods define its behavior.",
+		"From this lesson on, the static Playground class is available to your code -- it's your bridge to the actual world around you in-game. Try Playground.say(...) and Playground.placeBlock(...) below.",
+		"Positions are relative to you: Playground.placeBlock(dx, dy, dz, \"stone\") places a block dx/dy/dz away from where you're standing."
+	],
+	"starterCode": "public class Lesson {\n    static class Mob {\n        String name;\n        int health;\n\n        Mob(String name, int health) {\n            this.name = name;\n            this.health = health;\n        }\n\n        void describe() {\n            System.out.println(name + \" has \" + health + \" health\");\n        }\n    }\n\n    public static void main(String[] args) {\n        Mob zombie = new Mob(\"Zombie\", 20);\n        Mob skeleton = new Mob(\"Skeleton\", 20);\n        zombie.describe();\n        skeleton.describe();\n\n        Playground.say(\"Placing a block above my head...\");\n        Playground.placeBlock(0, 2, 0, \"gold_block\");\n        Playground.particles(0, 3, 0, \"happy_villager\", 15);\n    }\n}\n",
+	"usesPlayground": true
+}
