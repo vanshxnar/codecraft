@@ -1,0 +1,12 @@
+{
+	"id": "inheritance",
+	"order": 11,
+	"title": "Inheritance & Interfaces",
+	"topic": "Object-oriented programming",
+	"explanation": [
+		"An interface lists methods without writing any of them. A class that implements it is promising to provide every one.",
+		"extends is a different tool: it inherits real code from a parent. Beacon gets Pillar's build() for free, runs it via super.build(...), then adds its own flourish.",
+		"The payoff is the loop at the bottom. It treats every item as a Structure and calls build() - and each object runs its own version. That is polymorphism."
+	],
+	"usesPlayground": true
+}

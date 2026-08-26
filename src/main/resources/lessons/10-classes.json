@@ -1,0 +1,12 @@
+{
+	"id": "classes",
+	"order": 10,
+	"title": "Classes & Objects",
+	"topic": "Object-oriented programming",
+	"explanation": [
+		"A class is a blueprint; an object is one thing built from it. Fields hold its data, the constructor fills them in, and methods are what it can do.",
+		"new Tower(\"stone_bricks\", 5) runs the constructor and hands back an object. Inside it, this.block = block means the field named block takes the parameter named block.",
+		"Both towers run the very same buildAt code, but each one uses its own block and height. Add a third with settings of your choosing."
+	],
+	"usesPlayground": true
+}

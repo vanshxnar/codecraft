@@ -1,0 +1,12 @@
+{
+	"id": "loops",
+	"order": 5,
+	"title": "Loops",
+	"topic": "Control flow",
+	"explanation": [
+		"A for loop repeats a block a set number of times. Its three parts are: where to start, how long to keep going, and what to change after each pass.",
+		"for (int y = 1; y <= 8; y++) runs with y as 1, 2, 3 ... 8. The y++ is shorthand for add one to y.",
+		"This is where code beats placing blocks by hand. Change the 8 to 40 and you get a 40-block tower for exactly the same effort."
+	],
+	"usesPlayground": true
+}

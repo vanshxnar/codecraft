@@ -69,7 +69,7 @@ final class LessonListPanel {
 			}
 			int color = selected ? 0xFFFFFFFF : done ? 0xFF7FD97F : 0xFFCCCCCC;
 			String prefix = done ? "✓ " : "";
-			graphics.drawString(font, prefix + lesson.title(), x + 6, rowY + 5, color, false);
+			graphics.drawString(font, prefix + lesson.title(), x + 6, rowY + 5, color, true);
 			rowY += ROW_HEIGHT;
 		}
 	}

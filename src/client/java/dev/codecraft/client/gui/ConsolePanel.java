@@ -64,7 +64,7 @@ final class ConsolePanel {
 		int drawY = y + 4;
 		for (int i = start; i < lines.size(); i++) {
 			Entry entry = lines.get(i);
-			graphics.drawString(font, entry.line(), x + 4, drawY, entry.color(), false);
+			graphics.drawString(font, entry.line(), x + 4, drawY, entry.color(), true);
 			drawY += lineHeight;
 		}
 	}

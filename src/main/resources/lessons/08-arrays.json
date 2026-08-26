@@ -1,0 +1,12 @@
+{
+	"id": "arrays",
+	"order": 8,
+	"title": "Arrays",
+	"topic": "Data",
+	"explanation": [
+		"An array holds a fixed number of values of one type. Write it out with braces, then reach into it with square brackets.",
+		"Positions start at 0, so a 5-item array has indexes 0 to 4 and palette.length is 5. Asking for palette[5] is an error.",
+		"There are two ways to walk an array: a counting for loop when you need the index, or a for-each loop when you only care about each value."
+	],
+	"usesPlayground": true
+}

@@ -1,12 +1,14 @@
 [
 	"01-hello-world.json",
 	"02-variables.json",
-	"03-conditionals.json",
-	"04-loops.json",
-	"05-methods.json",
-	"06-arrays-and-collections.json",
-	"07-classes-and-objects.json",
-	"08-inheritance-and-interfaces.json",
-	"09-reading-the-world.json",
-	"10-capstone-build-a-house.json"
+	"03-math.json",
+	"04-conditionals.json",
+	"05-loops.json",
+	"06-nested-loops.json",
+	"07-methods.json",
+	"08-arrays.json",
+	"09-lists.json",
+	"10-classes.json",
+	"11-inheritance.json",
+	"12-capstone.json"
 ]

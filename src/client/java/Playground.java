@@ -1,136 +1,91 @@
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
+import dev.codecraft.playground.PlaygroundBackend;
+import dev.codecraft.playground.PlaygroundRegistry;
 
 /**
- * Deliberately in the default (unnamed) package: lesson code compiled by JavaRunner is
- * also unpackaged, so it can call Playground.xyz(...) with no import statement -- lesson
- * authors shouldn't need to know what a package is yet.
+ * Your bridge from Java into the Minecraft world.
  *
- * All positions are relative offsets from the local player's current block position.
- * Scoped to singleplayer: calls are a no-op if there's no local integrated server running.
+ * Deliberately in the default (unnamed) package so lesson code can call Playground.xyz(...)
+ * with no import -- a learner on lesson 1 shouldn't need to know what a package is yet.
+ * Every position is a relative offset from where you're standing: (0, 1, 0) is the block
+ * directly above your head, (0, -1, 0) is the one under your feet.
  */
 public final class Playground {
-	private static final long SERVER_CALL_TIMEOUT_MS = 2000;
-
 	private Playground() {
 	}
 
+	/** Sends a chat message to yourself. */
+	public static void say(String message) {
+		backend().say(message);
+	}
+
+	/** Flashes a message above your hotbar. */
+	public static void showTitle(String message) {
+		backend().showTitle(message);
+	}
+
+	/** Places a block, e.g. placeBlock(0, 1, 2, "stone"). */
 	public static void placeBlock(int dx, int dy, int dz, String blockId) {
-		runOnServer(player -> {
-			BlockPos pos = player.blockPosition().offset(dx, dy, dz);
-			Block block = BuiltInRegistries.BLOCK.get(ResourceLocation.withDefaultNamespace(blockId));
-			player.serverLevel().setBlock(pos, block.defaultBlockState(), 3);
-		});
+		backend().placeBlock(dx, dy, dz, blockId);
 	}
 
+	/** Replaces a block with air. */
 	public static void breakBlock(int dx, int dy, int dz) {
-		runOnServer(player -> {
-			BlockPos pos = player.blockPosition().offset(dx, dy, dz);
-			player.serverLevel().setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-		});
+		backend().breakBlock(dx, dy, dz);
 	}
 
-	/** Reads back the block id at a relative position, e.g. "stone" or "air" -- lets lesson code react to the world. */
+	/** Reads back what's at a position, e.g. "stone", "grass_block" or "air". */
 	public static String getBlock(int dx, int dy, int dz) {
-		return callOnServer(player -> {
-			BlockPos pos = player.blockPosition().offset(dx, dy, dz);
-			Block block = player.serverLevel().getBlockState(pos).getBlock();
-			return BuiltInRegistries.BLOCK.getKey(block).getPath();
-		}, "air");
+		return backend().getBlock(dx, dy, dz);
 	}
 
+	/** Spawns a mob, e.g. spawnEntity(0, 0, 3, "cow"). */
 	public static void spawnEntity(int dx, int dy, int dz, String entityId) {
-		runOnServer(player -> {
-			BlockPos pos = player.blockPosition().offset(dx, dy, dz);
-			EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.withDefaultNamespace(entityId));
-			type.spawn(player.serverLevel(), pos, MobSpawnType.COMMAND);
-		});
+		backend().spawnEntity(dx, dy, dz, entityId);
 	}
 
 	public static void teleportPlayer(int dx, int dy, int dz) {
-		runOnServer(player -> {
-			BlockPos pos = player.blockPosition().offset(dx, dy, dz);
-			player.teleportTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-		});
+		backend().teleportPlayer(dx, dy, dz);
 	}
 
-	/** Drops a shower of particles at a relative position, e.g. "happy_villager", "flame", "cloud", "explosion". */
+	/** Sprays particles, e.g. particles(0, 2, 0, "happy_villager", 20). */
 	public static void particles(int dx, int dy, int dz, String particleId, int count) {
-		runOnServer(player -> {
-			BlockPos pos = player.blockPosition().offset(dx, dy, dz);
-			ParticleType<?> type = BuiltInRegistries.PARTICLE_TYPE.get(ResourceLocation.withDefaultNamespace(particleId));
-			if (type instanceof SimpleParticleType simple) {
-				player.serverLevel().sendParticles(simple,
-						pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, count, 0.3, 0.3, 0.3, 0.02);
-			}
-		});
+		backend().particles(dx, dy, dz, particleId, count);
 	}
 
-	/** Puts an item in the player's inventory, e.g. "diamond", "torch". */
+	/** Puts an item in your inventory, e.g. giveItem("diamond", 3). */
 	public static void giveItem(String itemId, int count) {
-		runOnServer(player -> {
-			Item item = BuiltInRegistries.ITEM.get(ResourceLocation.withDefaultNamespace(itemId));
-			player.getInventory().add(new ItemStack(item, count));
-		});
+		backend().giveItem(itemId, count);
 	}
 
-	public static void say(String message) {
-		runOnServer(player -> player.sendSystemMessage(Component.literal(message)));
+	/** Plays a sound at your feet, e.g. playSound("entity.player.levelup"). */
+	public static void playSound(String soundId) {
+		backend().playSound(soundId);
 	}
 
-	private static void runOnServer(java.util.function.Consumer<ServerPlayer> action) {
-		callOnServer(player -> {
-			action.accept(player);
-			return null;
-		}, null);
+	/** Your current world X coordinate. */
+	public static int playerX() {
+		return backend().playerX();
 	}
 
-	private static <T> T callOnServer(Function<ServerPlayer, T> action, T defaultValue) {
-		Minecraft client = Minecraft.getInstance();
-		if (!client.hasSingleplayerServer()) {
-			return defaultValue;
+	public static int playerY() {
+		return backend().playerY();
+	}
+
+	public static int playerZ() {
+		return backend().playerZ();
+	}
+
+	/** True if it's currently daytime in the world. */
+	public static boolean isDay() {
+		return backend().isDay();
+	}
+
+	private static PlaygroundBackend backend() {
+		PlaygroundBackend backend = PlaygroundRegistry.get();
+		if (backend == null) {
+			throw new IllegalStateException(
+					"Playground isn't connected to a world yet -- join a singleplayer world and try again.");
 		}
-		LocalPlayer localPlayer = client.player;
-		if (localPlayer == null) {
-			return defaultValue;
-		}
-		MinecraftServer server = client.getSingleplayerServer();
-		CountDownLatch latch = new CountDownLatch(1);
-		AtomicReference<T> result = new AtomicReference<>(defaultValue);
-		server.execute(() -> {
-			try {
-				ServerPlayer serverPlayer = server.getPlayerList().getPlayer(localPlayer.getUUID());
-				if (serverPlayer != null) {
-					result.set(action.apply(serverPlayer));
-				}
-			} finally {
-				latch.countDown();
-			}
-		});
-		try {
-			latch.await(SERVER_CALL_TIMEOUT_MS, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-		}
-		return result.get();
+		return backend;
 	}
 }

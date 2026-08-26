@@ -1,0 +1,12 @@
+{
+	"id": "lists",
+	"order": 9,
+	"title": "Lists & Collections",
+	"topic": "Data",
+	"explanation": [
+		"An array is stuck at the size you gave it. An ArrayList grows and shrinks: add() puts one on the end, size() counts them, get(i) reads one back.",
+		"List<String> means a list holding text. The type in angle brackets tells Java what is allowed inside.",
+		"This one genuinely surveys the ground ahead of you and bridges whatever gaps it finds. Walk to the lip of a cliff or a ravine and run it."
+	],
+	"usesPlayground": true
+}

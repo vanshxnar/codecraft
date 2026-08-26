@@ -82,18 +82,37 @@ public final class LessonRepository {
 			for (JsonElement e : obj.getAsJsonArray("explanation")) {
 				explanation.add(e.getAsString());
 			}
+			String starterCode = readStarterCode(file);
+			if (starterCode == null) {
+				return null;
+			}
 			return new Lesson(
 					obj.get("id").getAsString(),
 					obj.get("order").getAsInt(),
 					obj.get("title").getAsString(),
 					obj.get("topic").getAsString(),
 					explanation,
-					obj.get("starterCode").getAsString(),
+					starterCode,
 					obj.has("usesPlayground") && obj.get("usesPlayground").getAsBoolean()
 			);
 		} catch (IOException | RuntimeException e) {
 			CodeCraftMod.LOGGER.error("Failed to parse lesson resource {}", path, e);
 			return null;
+		}
+	}
+
+	/**
+	 * Starter code lives in a .java file next to the lesson's .json rather than inside it, so
+	 * lessons stay readable and editable as real source instead of one escaped JSON string.
+	 */
+	private static String readStarterCode(String jsonFile) throws IOException {
+		String path = "/lessons/" + jsonFile.replaceAll("\\.json$", ".java");
+		try (InputStream in = LessonRepository.class.getResourceAsStream(path)) {
+			if (in == null) {
+				CodeCraftMod.LOGGER.error("Missing starter code resource {}", path);
+				return null;
+			}
+			return new String(in.readAllBytes(), StandardCharsets.UTF_8);
 		}
 	}
 }

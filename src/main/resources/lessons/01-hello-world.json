@@ -1,13 +1,12 @@
 {
 	"id": "hello-world",
 	"order": 1,
-	"title": "Hello, World!",
-	"topic": "Basics",
+	"title": "Hello, Builder",
+	"topic": "Getting started",
 	"explanation": [
-		"Every Java program starts somewhere. That somewhere is a method called main -- the JVM looks for exactly this signature and runs it first: public static void main(String[] args).",
-		"Inside main, System.out.println(...) prints a line of text to the console below. Try changing the message and hit Run.",
-		"Notice the console pane updates live as your program runs -- that's the workflow you'll use for every lesson from here on."
+		"Every Java program starts in a method called main. The JVM looks for exactly that line - public static void main(String[] args) - and runs whatever sits inside its braces, top to bottom.",
+		"Each instruction ends in a semicolon. System.out.println prints into the console panel below you; Playground.say sends yourself a chat message; Playground.showTitle flashes text above your hotbar.",
+		"Anything between double quotes is just text. Change the messages, hit Run, and watch all three land at once."
 	],
-	"starterCode": "public class Lesson {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, world!\");\n    }\n}\n",
-	"usesPlayground": false
+	"usesPlayground": true
 }

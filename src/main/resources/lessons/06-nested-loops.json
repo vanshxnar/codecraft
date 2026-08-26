@@ -1,0 +1,12 @@
+{
+	"id": "nested-loops",
+	"order": 6,
+	"title": "Nested Loops",
+	"topic": "Control flow",
+	"explanation": [
+		"Put a loop inside a loop and you sweep a whole 2D area. The outer loop picks an x, and the inner loop runs through every z for that x.",
+		"A 7 by 7 area means the inner body runs 49 times. Multiply the two counts and you know how many blocks you are about to place.",
+		"Try changing size, or the block. Go easy on big numbers - every placement happens one at a time."
+	],
+	"usesPlayground": true
+}

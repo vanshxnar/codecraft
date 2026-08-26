@@ -8,7 +8,6 @@ import dev.codecraft.progress.ProgressStore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -25,7 +24,7 @@ public final class EditorScreen extends Screen {
 
 	private LessonListPanel lessonList;
 	private ConsolePanel console;
-	private MultiLineEditBox editorBox;
+	private CodeEditorBox editorBox;
 	private Button runButton;
 	private Lesson current;
 	private volatile boolean running;
@@ -49,7 +48,7 @@ public final class EditorScreen extends Screen {
 
 		int editorY = listY;
 		int editorHeight = this.height - editorY - BUTTON_HEIGHT - CONSOLE_HEIGHT - MARGIN - 12;
-		editorBox = new MultiLineEditBox(this.font, rightX, editorY, rightWidth, editorHeight,
+		editorBox = new CodeEditorBox(this.font, rightX, editorY, rightWidth, editorHeight,
 				Component.literal("Write your Java code here..."), Component.literal("Code editor"));
 		addRenderableWidget(editorBox);
 
@@ -77,6 +76,7 @@ public final class EditorScreen extends Screen {
 		current = lesson;
 		lessonList.setSelected(lesson.id());
 		editorBox.setValue(lesson.starterCode());
+		editorBox.showTop();
 		console.clear();
 		console.info(lesson.title() + " (" + lesson.topic() + ")");
 		for (String paragraph : lesson.explanation()) {
@@ -135,10 +135,22 @@ public final class EditorScreen extends Screen {
 		// Deliberately not calling renderBackground(): it triggers Minecraft's blur-the-world-behind-the-GUI
 		// pass, which bled through every gap between our panels. A flat fill keeps the whole screen crisp.
 		graphics.fill(0, 0, this.width, this.height, 0xFF1A1A1E);
-		graphics.drawString(this.font, "CodeCraft", MARGIN, MARGIN, 0xFFFFFFFF, false);
+		graphics.drawString(this.font, "CodeCraft", MARGIN, MARGIN, 0xFFFFFFFF, true);
 		lessonList.render(graphics);
 		console.render(graphics);
 		super.render(graphics, mouseX, mouseY, partialTick);
+	}
+
+	/**
+	 * Opt out of the vanilla menu blur.
+	 *
+	 * Minecraft runs this as part of the standard screen path even though our render() never
+	 * calls renderBackground(), and the blur post-effect processes the main render target
+	 * mid-frame -- which smeared every panel we had already drawn while leaving the widgets
+	 * drawn afterwards crisp. We paint our own opaque background, so there is nothing to blur.
+	 */
+	@Override
+	protected void renderBlurredBackground(float partialTick) {
 	}
 
 	@Override
