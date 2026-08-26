@@ -28,7 +28,11 @@ public class CodeCraftModClient implements ClientModInitializer {
 				dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 						.literal("codecraft")
 						.executes(context -> {
-							openEditor(Minecraft.getInstance());
+							// Deferred: opening a screen synchronously inside a chat-submitted command's
+							// executes() gets immediately clobbered by the chat screen's own close-screen
+							// call later in that same call stack. Queuing it runs after that stack unwinds.
+							Minecraft client = Minecraft.getInstance();
+							client.execute(() -> openEditor(client));
 							return com.mojang.brigadier.Command.SINGLE_SUCCESS;
 						})));
 	}

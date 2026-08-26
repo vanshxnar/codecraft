@@ -132,7 +132,9 @@ public final class EditorScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-		renderBackground(graphics, mouseX, mouseY, partialTick);
+		// Deliberately not calling renderBackground(): it triggers Minecraft's blur-the-world-behind-the-GUI
+		// pass, which bled through every gap between our panels. A flat fill keeps the whole screen crisp.
+		graphics.fill(0, 0, this.width, this.height, 0xFF1A1A1E);
 		graphics.drawString(this.font, "CodeCraft", MARGIN, MARGIN, 0xFFFFFFFF, false);
 		lessonList.render(graphics);
 		console.render(graphics);
