@@ -3,6 +3,7 @@
 	"order": 11,
 	"title": "Inheritance & Interfaces",
 	"topic": "Object-oriented programming",
+	"level": "CORE",
 	"explanation": [
 		"An interface lists methods without writing any of them. A class that implements it is promising to provide every one.",
 		"extends is a different tool: it inherits real code from a parent. Beacon gets Pillar's build() for free, runs it via super.build(...), then adds its own flourish.",

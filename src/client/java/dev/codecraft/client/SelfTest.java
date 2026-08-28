@@ -2,6 +2,11 @@ package dev.codecraft.client;
 
 import dev.codecraft.CodeCraftMod;
 import dev.codecraft.client.gui.EditorScreen;
+import dev.codecraft.client.gui.TrackSelectScreen;
+import dev.codecraft.lessons.Lesson;
+import dev.codecraft.lessons.LessonRepository;
+import dev.codecraft.lessons.Track;
+import dev.codecraft.progress.TrackStore;
 import dev.codecraft.exec.JavaRunner;
 import dev.codecraft.exec.OutputSink;
 import net.fabricmc.api.EnvType;
@@ -14,6 +19,7 @@ import net.minecraft.client.Screenshot;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Development-only smoke test, triggered by dropping a "codecraft-selftest.txt" marker in the
@@ -34,6 +40,8 @@ public final class SelfTest {
 			    }
 			}
 			""";
+
+	private static final String SEP = "\n    ";
 
 	private static Path marker;
 	private static int ticks;
@@ -57,7 +65,17 @@ public final class SelfTest {
 		}
 		ticks++;
 		if (ticks == 20) {
-			CodeCraftMod.LOGGER.info("[selftest] opening editor");
+			for (Track track : Track.values()) {
+				CodeCraftMod.LOGGER.info("[selftest] track {} -> {} lessons", track.label(),
+						LessonRepository.forTrack(track).size());
+			}
+			CodeCraftMod.LOGGER.info("[selftest] opening track picker");
+			client.setScreen(new TrackSelectScreen());
+		} else if (ticks == 30) {
+			grab(client, "codecraft-selftest-track.png");
+		} else if (ticks == 45) {
+			TrackStore.choose(Track.NEW_TO_CODE);
+			CodeCraftMod.LOGGER.info("[selftest] chose {}, opening editor", TrackStore.chosen());
 			client.setScreen(new EditorScreen());
 		} else if (ticks == 60) {
 			runCompileTest();
@@ -82,11 +100,18 @@ public final class SelfTest {
 			CodeCraftMod.LOGGER.info("[selftest] guiScale={} forceUnicode={} windowGui={}x{}",
 					client.options.guiScale().get(), client.options.forceUnicodeFont().get(),
 					client.getWindow().getGuiScaledWidth(), client.getWindow().getGuiScaledHeight());
-			CodeCraftMod.LOGGER.info("[selftest] capturing screen: {}",
-					client.screen == null ? "none" : client.screen.getClass().getName());
-			Screenshot.grab(client.gameDirectory, "codecraft-selftest.png", client.getMainRenderTarget(),
-					component -> CodeCraftMod.LOGGER.info("[selftest] screenshot: {}", component.getString()));
+			grab(client, "codecraft-selftest.png");
+		} else if (ticks == 145 && client.screen != null) {
+			// Scroll the lesson list to the bottom so the screenshot proves clipping and the
+			// ADVANCED section both render.
+			client.screen.mouseScrolled(60, 120, 0, -12);
+		} else if (ticks == 150) {
+			grab(client, "codecraft-selftest-scrolled.png");
 		} else if (ticks == 160) {
+			// Last, and on its own: JavaRunner swaps System.out while a program runs, so this must
+			// not overlap the Playground smoke test above.
+			runEveryLesson();
+		} else if (ticks == 170) {
 			finished = true;
 			try {
 				Files.deleteIfExists(marker);
@@ -95,6 +120,57 @@ public final class SelfTest {
 			}
 			CodeCraftMod.LOGGER.info("[selftest] DONE");
 		}
+	}
+
+	/**
+	 * Compile and actually run every shipped lesson.
+	 *
+	 * Compiling alone would miss the failure that matters most here: a lesson that makes so many
+	 * Playground calls it trips the five-second runner timeout. Elapsed time is logged per lesson
+	 * so a slow one is obvious before a learner finds it.
+	 */
+	private static void runEveryLesson() {
+		Thread thread = new Thread(() -> {
+			int failed = 0;
+			for (Lesson lesson : LessonRepository.all()) {
+				StringBuilder errors = new StringBuilder();
+				AtomicBoolean ok = new AtomicBoolean();
+				long startedAt = System.currentTimeMillis();
+				JavaRunner.run(lesson.starterCode(), new OutputSink() {
+					@Override
+					public void onOutput(String line) {
+					}
+
+					@Override
+					public void onError(String line) {
+						errors.append(SEP).append(line);
+					}
+
+					@Override
+					public void onFinished(boolean success) {
+						ok.set(success);
+					}
+				});
+				long elapsed = System.currentTimeMillis() - startedAt;
+				if (ok.get() && errors.isEmpty()) {
+					CodeCraftMod.LOGGER.info("[selftest] lesson {} ok in {}ms", lesson.id(), elapsed);
+				} else {
+					failed++;
+					CodeCraftMod.LOGGER.error("[selftest] lesson {} FAILED after {}ms:{}", lesson.id(), elapsed, errors);
+				}
+			}
+			CodeCraftMod.LOGGER.info("[selftest] lesson run check: {} lessons, {} failed",
+					LessonRepository.all().size(), failed);
+		}, "codecraft-selftest-lessons");
+		thread.setDaemon(true);
+		thread.start();
+	}
+
+	private static void grab(Minecraft client, String name) {
+		CodeCraftMod.LOGGER.info("[selftest] capturing {}: screen is {}", name,
+				client.screen == null ? "none" : client.screen.getClass().getSimpleName());
+		Screenshot.grab(client.gameDirectory, name, client.getMainRenderTarget(),
+				component -> CodeCraftMod.LOGGER.info("[selftest] screenshot: {}", component.getString()));
 	}
 
 	private static void runCompileTest() {

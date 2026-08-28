@@ -17,10 +17,27 @@ in chunks, block ids and coordinates rather than abstract exercises.
 
 Join a singleplayer world, then press **G** or run **`/codecraft`** to open the editor.
 
-- Pick a lesson on the left; its explanation appears in the console panel.
+The first time it opens, it asks how much Java you already know. After that it goes straight in.
+
+- Pick a lesson on the left; its explanation appears in the console panel. The list scrolls.
 - Edit the code in the middle pane and press **Run ▶**.
 - `System.out.println(...)` output, compiler errors and stack traces stream into the console.
 - Lessons you complete are ticked off and remembered per player.
+
+## Experience tracks
+
+Your answer only sets where the lesson list starts — nothing is deleted, and the **Track** button
+in the top right switches at any time.
+
+| Track | Starts at | Lessons |
+| --- | --- | --- |
+| New to code | Fundamentals — what a variable is | 18 |
+| Coded before | Core Java — methods, arrays, classes | 13 |
+| Know Java | Advanced — maps, generics, streams | 7 |
+
+The 18 lessons run: hello world, variables, math, conditionals, loops, nested loops, methods,
+arrays, lists, classes, inheritance and interfaces, maps, exceptions, generics, lambdas, streams,
+recursion, and a capstone that builds a base. Each one does something visible in the world.
 
 ## The Playground API
 
@@ -46,10 +63,11 @@ where you are standing, so `(0, 1, 0)` is the block above your head.
 
 Lessons are data, not code. Each one is a pair of files in `src/main/resources/lessons/`:
 
-- `NN-name.json` — id, order, title, topic and the explanation paragraphs
+- `NN-name.json` — id, order, title, topic, `level` and the explanation paragraphs
 - `NN-name.java` — the starter code, as a real `.java` file so it stays readable
 
-Add both, then list the `.json` in `lessons/index.json`. Nothing else needs to change.
+`level` is `FUNDAMENTALS`, `CORE` or `ADVANCED`, and decides which experience tracks show the
+lesson. Add both files, then list the `.json` in `lessons/index.json`. Nothing else changes.
 
 ## Building
 
@@ -61,9 +79,11 @@ Add both, then list the `.json` in `lessons/index.json`. Nothing else needs to c
 ### Dev self-test
 
 Dropping a file named `codecraft-selftest.txt` into the run directory arms an automated smoke
-test: it opens the editor, exercises `/codecraft`, compiles and runs a Playground program, and
-saves a screenshot to `run/screenshots/`. It does nothing without that marker file, and it
-exists so GUI and compiler changes can be verified without driving the client by hand.
+test: it opens the track picker and the editor, exercises `/codecraft`, scrolls the lesson list,
+saves screenshots to `run/screenshots/`, and then compiles **and runs** every shipped lesson
+against the live world, logging elapsed time each. It does nothing without that marker file, and
+it exists so GUI, compiler and curriculum changes can be verified without driving the client by
+hand.
 
 ## How it works, briefly
 

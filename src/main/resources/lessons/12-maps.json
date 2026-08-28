@@ -1,0 +1,13 @@
+{
+	"id": "maps",
+	"order": 12,
+	"title": "Maps & Counting",
+	"topic": "Collections",
+	"level": "ADVANCED",
+	"explanation": [
+		"A List answers what is at position 3. A Map answers what is stored under this key - here, how many of each block id we found.",
+		"getOrDefault is the counting idiom: read the current tally, or 0 if this is the first time we have seen that block, then put it back one higher.",
+		"entrySet() hands you the key and the value together, which is what you want when printing or sorting a tally."
+	],
+	"usesPlayground": true
+}

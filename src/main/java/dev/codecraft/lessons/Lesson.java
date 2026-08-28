@@ -7,6 +7,7 @@ public record Lesson(
 		int order,
 		String title,
 		String topic,
+		LessonLevel level,
 		List<String> explanation,
 		String starterCode,
 		boolean usesPlayground

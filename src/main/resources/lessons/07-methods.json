@@ -3,6 +3,7 @@
 	"order": 7,
 	"title": "Methods",
 	"topic": "Structure",
+	"level": "CORE",
 	"explanation": [
 		"A method is a named block of code you can run whenever you like. The values you pass in are parameters - they behave like variables filled in at the moment you call it.",
 		"void means the method hands nothing back. Any other type, like int, means it must return a value of that type.",

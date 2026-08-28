@@ -4,10 +4,13 @@ import dev.codecraft.exec.JavaRunner;
 import dev.codecraft.exec.OutputSink;
 import dev.codecraft.lessons.Lesson;
 import dev.codecraft.lessons.LessonRepository;
+import dev.codecraft.lessons.Track;
 import dev.codecraft.progress.ProgressStore;
+import dev.codecraft.progress.TrackStore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -16,16 +19,20 @@ import java.util.Set;
 
 /** The in-game code editor overlay: lesson list, editor, console and Run -- all rendered directly in the game window. */
 public final class EditorScreen extends Screen {
+	private static final String TITLE = "CodeCraft";
 	private static final int MARGIN = 8;
 	private static final int LIST_WIDTH = 150;
-	private static final int CONSOLE_HEIGHT = 110;
 	private static final int BUTTON_HEIGHT = 20;
 	private static final int TOP_BAR_HEIGHT = 22;
+	private static final int TRACK_BUTTON_WIDTH = 120;
+	/** Share of the right-hand column given to the editor; the console gets the rest. */
+	private static final int EDITOR_SHARE_PERCENT = 55;
 
 	private LessonListPanel lessonList;
 	private ConsolePanel console;
 	private CodeEditorBox editorBox;
 	private Button runButton;
+	private Button trackButton;
 	private Lesson current;
 	private volatile boolean running;
 
@@ -35,9 +42,29 @@ public final class EditorScreen extends Screen {
 
 	@Override
 	protected void init() {
-		List<Lesson> lessons = LessonRepository.all();
+		// init() runs again on every window resize and whenever the track changes, so hold on to
+		// whatever is currently typed -- otherwise resizing the game would silently discard it.
+		String typed = editorBox != null ? editorBox.getValue() : null;
+		Lesson typedFor = current;
+
+		Track track = TrackStore.chosenOrDefault();
+		List<Lesson> lessons = LessonRepository.forTrack(track);
 		lessonList = new LessonListPanel(this.font, lessons, this::selectLesson);
 		console = new ConsolePanel(this.font);
+
+		// Tucked in beside the title: vanilla toasts occupy the top-right corner and would cover it.
+		int trackX = MARGIN + this.font.width(TITLE) + 10;
+		trackButton = Button.builder(Component.literal("Track: " + track.label()), btn -> cycleTrack())
+				.bounds(trackX, MARGIN - 3, TRACK_BUTTON_WIDTH, BUTTON_HEIGHT)
+				.build();
+		trackButton.setTooltip(Tooltip.create(
+				Component.literal(track.blurb() + " Click to switch.")));
+		addRenderableWidget(trackButton);
+
+		// A track change can hide the lesson we were on; fall back to the first one it does show.
+		if (current != null && lessons.stream().noneMatch(lesson -> lesson.id().equals(current.id()))) {
+			current = null;
+		}
 
 		int listY = MARGIN + TOP_BAR_HEIGHT;
 		int listHeight = this.height - listY - MARGIN;
@@ -47,7 +74,9 @@ public final class EditorScreen extends Screen {
 		int rightWidth = this.width - rightX - MARGIN;
 
 		int editorY = listY;
-		int editorHeight = this.height - editorY - BUTTON_HEIGHT - CONSOLE_HEIGHT - MARGIN - 12;
+		int columnHeight = this.height - editorY - MARGIN - BUTTON_HEIGHT - 12;
+		int editorHeight = Math.max(40, columnHeight * EDITOR_SHARE_PERCENT / 100);
+		int consoleHeight = columnHeight - editorHeight;
 		editorBox = new CodeEditorBox(this.font, rightX, editorY, rightWidth, editorHeight,
 				Component.literal("Write your Java code here..."), Component.literal("Code editor"));
 		addRenderableWidget(editorBox);
@@ -59,7 +88,7 @@ public final class EditorScreen extends Screen {
 		addRenderableWidget(runButton);
 
 		int consoleY = buttonY + BUTTON_HEIGHT + 6;
-		console.setBounds(rightX, consoleY, rightWidth, CONSOLE_HEIGHT);
+		console.setBounds(rightX, consoleY, rightWidth, consoleHeight);
 
 		Set<String> completed = completedLessons();
 		lessonList.setCompleted(completed);
@@ -67,9 +96,25 @@ public final class EditorScreen extends Screen {
 		Lesson toShow = current != null ? current : lessons.isEmpty() ? null : lessons.get(0);
 		if (toShow != null) {
 			selectLesson(toShow);
+			if (typed != null && typedFor != null && typedFor.id().equals(toShow.id())) {
+				editorBox.setValue(typed);
+				editorBox.showTop();
+			}
 		} else {
 			console.error("No lessons found -- check the mod's lessons/ resources.");
 		}
+	}
+
+	/**
+	 * Switch experience track in place.
+	 *
+	 * rebuildWidgets() re-runs init(), which re-reads the stored track -- so the lesson list, the
+	 * button label and the tooltip all follow from the one saved value rather than being nudged
+	 * individually and drifting apart.
+	 */
+	private void cycleTrack() {
+		TrackStore.choose(TrackStore.chosenOrDefault().next());
+		rebuildWidgets();
 	}
 
 	private void selectLesson(Lesson lesson) {
@@ -83,6 +128,7 @@ public final class EditorScreen extends Screen {
 			console.info(paragraph);
 		}
 		console.info("Press Run to try it.");
+		console.showTop();
 	}
 
 	private void runCurrentLesson() {
@@ -135,7 +181,7 @@ public final class EditorScreen extends Screen {
 		// Deliberately not calling renderBackground(): it triggers Minecraft's blur-the-world-behind-the-GUI
 		// pass, which bled through every gap between our panels. A flat fill keeps the whole screen crisp.
 		graphics.fill(0, 0, this.width, this.height, 0xFF1A1A1E);
-		graphics.drawString(this.font, "CodeCraft", MARGIN, MARGIN, 0xFFFFFFFF, true);
+		graphics.drawString(this.font, TITLE, MARGIN, MARGIN, 0xFFFFFFFF, true);
 		lessonList.render(graphics);
 		console.render(graphics);
 		super.render(graphics, mouseX, mouseY, partialTick);
@@ -159,6 +205,14 @@ public final class EditorScreen extends Screen {
 			return true;
 		}
 		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+		if (lessonList.mouseScrolled(mouseX, mouseY, scrollY) || console.mouseScrolled(mouseX, mouseY, scrollY)) {
+			return true;
+		}
+		return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
 	}
 
 	@Override

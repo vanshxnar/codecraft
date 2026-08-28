@@ -1,8 +1,9 @@
 {
 	"id": "capstone",
-	"order": 12,
+	"order": 18,
 	"title": "Capstone: Build a Base",
 	"topic": "Putting it together",
+	"level": "ADVANCED",
 	"explanation": [
 		"Everything at once: fields for the settings, a method for each part of the build, loops to place the blocks, and Playground to make it real.",
 		"Read it top to bottom, then start changing things. size and wallHeight sit at the very top for a reason.",

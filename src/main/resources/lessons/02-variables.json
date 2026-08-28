@@ -3,6 +3,7 @@
 	"order": 2,
 	"title": "Variables & Types",
 	"topic": "Getting started",
+	"level": "FUNDAMENTALS",
 	"explanation": [
 		"A variable is a labelled box holding one value. Java insists on knowing the type up front: int for whole numbers, double for decimals, boolean for true or false, and String for text.",
 		"Declare one as: type name = value; After that the name stands in for the value everywhere you use it.",

@@ -3,6 +3,7 @@
 	"order": 3,
 	"title": "Math & Coordinates",
 	"topic": "Getting started",
+	"level": "FUNDAMENTALS",
 	"explanation": [
 		"Java does arithmetic with + - * / and %. One catch: dividing two whole numbers throws the remainder away, so 37 / 16 is 2, not 2.3.",
 		"That is exactly how you snap to a chunk boundary, and % hands you the leftover - how far into the chunk you are standing.",

@@ -1,0 +1,13 @@
+{
+	"id": "exceptions",
+	"order": 13,
+	"title": "Exceptions",
+	"topic": "Error handling",
+	"level": "ADVANCED",
+	"explanation": [
+		"When something goes wrong Java throws an exception, and everything after the failing line is skipped. catch lets you decide what happens instead of the program dying.",
+		"Catch the narrowest type you can. NumberFormatException tells you the text was not a number; catching plain Exception hides which of a dozen things broke.",
+		"finally runs either way, success or failure - the place for cleanup. And a custom exception like BuildException is just a class that extends Exception, which makes your own failures as readable as the built-in ones."
+	],
+	"usesPlayground": true
+}

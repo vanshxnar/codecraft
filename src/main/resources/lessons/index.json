@@ -10,5 +10,11 @@
 	"09-lists.json",
 	"10-classes.json",
 	"11-inheritance.json",
-	"12-capstone.json"
+	"12-maps.json",
+	"13-exceptions.json",
+	"14-generics.json",
+	"15-lambdas.json",
+	"16-streams.json",
+	"17-recursion.json",
+	"18-capstone.json"
 ]

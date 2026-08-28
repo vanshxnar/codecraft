@@ -28,14 +28,41 @@ public final class JavaRunner {
 	}
 
 	public static void run(String source, OutputSink sink) {
+		Compiled compiled = compile(source, sink);
+		if (compiled == null) {
+			sink.onFinished(false);
+			return;
+		}
+
+		Thread runner = new Thread(() -> executeCompiled(compiled.fileManager(), compiled.className(), sink), "codecraft-run");
+		runner.setDaemon(true);
+		runner.start();
+		try {
+			runner.join(TIMEOUT_MS);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+		}
+		if (runner.isAlive()) {
+			sink.onError("Still running after " + (TIMEOUT_MS / 1000) + "s -- looks like an infinite loop. Close and reopen the editor to reset.");
+		}
+	}
+
+	/** Compile without running. Used by the dev self-test to check every shipped lesson still builds. */
+	public static boolean compiles(String source, OutputSink sink) {
+		return compile(source, sink) != null;
+	}
+
+	private record Compiled(ClassFileManager fileManager, String className) {
+	}
+
+	private static Compiled compile(String source, OutputSink sink) {
 		Matcher matcher = CLASS_NAME.matcher(source);
 		String className = matcher.find() ? matcher.group(1) : "Lesson";
 
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		if (compiler == null) {
 			sink.onError("No Java compiler is available in this JVM (CodeCraft needs a JDK, not just a JRE, to run your code).");
-			sink.onFinished(false);
-			return;
+			return null;
 		}
 
 		DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
@@ -52,22 +79,7 @@ public final class JavaRunner {
 				sink.onError("line " + diagnostic.getLineNumber() + ": " + diagnostic.getMessage(null));
 			}
 		}
-		if (!compiled) {
-			sink.onFinished(false);
-			return;
-		}
-
-		Thread runner = new Thread(() -> executeCompiled(fileManager, className, sink), "codecraft-run");
-		runner.setDaemon(true);
-		runner.start();
-		try {
-			runner.join(TIMEOUT_MS);
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-		}
-		if (runner.isAlive()) {
-			sink.onError("Still running after " + (TIMEOUT_MS / 1000) + "s -- looks like an infinite loop. Close and reopen the editor to reset.");
-		}
+		return compiled ? new Compiled(fileManager, className) : null;
 	}
 
 	private static void executeCompiled(ClassFileManager fileManager, String className, OutputSink sink) {

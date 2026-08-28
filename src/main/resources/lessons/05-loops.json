@@ -3,6 +3,7 @@
 	"order": 5,
 	"title": "Loops",
 	"topic": "Control flow",
+	"level": "FUNDAMENTALS",
 	"explanation": [
 		"A for loop repeats a block a set number of times. Its three parts are: where to start, how long to keep going, and what to change after each pass.",
 		"for (int y = 1; y <= 8; y++) runs with y as 1, 2, 3 ... 8. The y++ is shorthand for add one to y.",

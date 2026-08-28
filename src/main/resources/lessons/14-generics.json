@@ -1,0 +1,13 @@
+{
+	"id": "generics",
+	"order": 14,
+	"title": "Generics",
+	"topic": "Type safety",
+	"level": "ADVANCED",
+	"explanation": [
+		"List<String> is a generic type in use: the <String> tells the compiler what comes out of it, so get() hands you a String with no cast and a List<String> refuses an Integer.",
+		"You can write your own. class Plan<T> means the type is decided by whoever creates one - new Plan<String>() stores Strings, and the same class stores anything else just as safely.",
+		"A generic method is the same idea on one method: <T> T first(List<T> items) returns whatever the list holds. No Object, no casting, and mistakes are caught at compile time rather than in your world."
+	],
+	"usesPlayground": true
+}

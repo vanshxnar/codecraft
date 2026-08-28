@@ -1,0 +1,13 @@
+{
+	"id": "lambdas",
+	"order": 15,
+	"title": "Lambdas",
+	"topic": "Functions as values",
+	"level": "ADVANCED",
+	"explanation": [
+		"A lambda is a function you can hand around like any other value. y -> y < 3 ? \"stone\" : \"glass\" is a whole implementation written inline.",
+		"It only works where a functional interface is expected - an interface with exactly one abstract method. BlockPicker here is one; java.util.function.Predicate and Function are the standard ones.",
+		"The win is that the how becomes a parameter. buildColumn does not know or care which rule it was given, so one method builds every pattern you can describe."
+	],
+	"usesPlayground": true
+}

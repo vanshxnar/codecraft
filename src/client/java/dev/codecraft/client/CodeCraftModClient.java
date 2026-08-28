@@ -2,8 +2,10 @@ package dev.codecraft.client;
 
 import com.mojang.brigadier.Command;
 import dev.codecraft.client.gui.EditorScreen;
+import dev.codecraft.client.gui.TrackSelectScreen;
 import dev.codecraft.client.playground.ClientPlaygroundBackend;
 import dev.codecraft.playground.PlaygroundRegistry;
+import dev.codecraft.progress.TrackStore;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -52,8 +54,10 @@ public class CodeCraftModClient implements ClientModInitializer {
 	}
 
 	private static void openEditor(Minecraft client) {
-		if (client.player != null && client.screen == null) {
-			client.setScreen(new EditorScreen());
+		if (client.player == null || client.screen != null) {
+			return;
 		}
+		// Ask about experience once, on the very first open; every open after that goes straight in.
+		client.setScreen(TrackStore.chosen() == null ? new TrackSelectScreen() : new EditorScreen());
 	}
 }

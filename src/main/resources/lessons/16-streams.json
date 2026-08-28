@@ -1,0 +1,13 @@
+{
+	"id": "streams",
+	"order": 16,
+	"title": "Streams",
+	"topic": "Data pipelines",
+	"level": "ADVANCED",
+	"explanation": [
+		"A stream is a pipeline over a collection: filter keeps some elements, map turns each one into something else, and a terminal operation like count, toList or forEach produces the answer.",
+		"Nothing happens until the terminal operation runs, and the source list is never modified - you get a new result back rather than a mutated original.",
+		"Read the chain top to bottom as a sentence. The loop version of the same work is not wrong, just longer and easier to get subtly wrong."
+	],
+	"usesPlayground": true
+}

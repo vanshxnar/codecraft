@@ -3,6 +3,7 @@
 	"order": 4,
 	"title": "Conditionals",
 	"topic": "Control flow",
+	"level": "FUNDAMENTALS",
 	"explanation": [
 		"An if block runs only when its condition is true; else if and else handle the other cases. Conditions use == != < > <= >=, joined with && for and, || for or.",
 		"The rule that trips up every Java beginner: compare text with .equals(...), not ==. Save == for numbers and booleans.",

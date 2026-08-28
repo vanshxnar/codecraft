@@ -48,6 +48,17 @@ public final class LessonRepository {
 		return Collections.unmodifiableList(ORDERED);
 	}
 
+	/** The lessons a given track starts from, in order. */
+	public static List<Lesson> forTrack(Track track) {
+		List<Lesson> out = new ArrayList<>();
+		for (Lesson lesson : ORDERED) {
+			if (track.includes(lesson.level())) {
+				out.add(lesson);
+			}
+		}
+		return out;
+	}
+
 	public static Lesson byId(String id) {
 		return BY_ID.get(id);
 	}
@@ -91,6 +102,7 @@ public final class LessonRepository {
 					obj.get("order").getAsInt(),
 					obj.get("title").getAsString(),
 					obj.get("topic").getAsString(),
+					LessonLevel.parse(obj.has("level") ? obj.get("level").getAsString() : null, LessonLevel.CORE),
 					explanation,
 					starterCode,
 					obj.has("usesPlayground") && obj.get("usesPlayground").getAsBoolean()
