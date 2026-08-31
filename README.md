@@ -1,8 +1,8 @@
 # CodeCraft
 
 Learn Java **inside** Minecraft. CodeCraft is a Fabric mod that puts a real code editor in the
-game window — no alt-tabbing to a browser — and runs what you write against the world you are
-standing in. Write a `for` loop, hit Run, and watch a tower go up in front of you.
+game window, with no alt-tabbing to a browser, and runs what you write against the world
+you are standing in. Write a `for` loop, hit Run, and watch a tower go up in front of you.
 
 The curriculum teaches Java from zero, but it assumes you already know Minecraft: lessons talk
 in chunks, block ids and coordinates rather than abstract exercises.
@@ -11,7 +11,7 @@ in chunks, block ids and coordinates rather than abstract exercises.
 
 - Minecraft Java Edition **1.21.1**
 - [Fabric Loader](https://fabricmc.net/use/) 0.19.3+ and [Fabric API](https://modrinth.com/mod/fabric-api)
-- A **JDK** 21 (not just a JRE) — CodeCraft compiles your code at runtime and needs a real compiler
+- A **JDK** 21, not just a JRE. CodeCraft compiles your code at runtime and needs a real compiler
 
 ## Using it
 
@@ -26,14 +26,14 @@ The first time it opens, it asks how much Java you already know. After that it g
 
 ## Experience tracks
 
-Your answer only sets where the lesson list starts — nothing is deleted, and the **Track** button
+Your answer only sets where the lesson list starts. Nothing is deleted, and the **Track** button
 in the top right switches at any time.
 
 | Track | Starts at | Lessons |
 | --- | --- | --- |
-| New to code | Fundamentals — what a variable is | 18 |
-| Coded before | Core Java — methods, arrays, classes | 13 |
-| Know Java | Advanced — maps, generics, streams | 7 |
+| New to code | Fundamentals: what a variable is | 18 |
+| Coded before | Core Java: methods, arrays, classes | 13 |
+| Know Java | Advanced: maps, generics, streams | 7 |
 
 The 18 lessons run: hello world, variables, math, conditionals, loops, nested loops, methods,
 arrays, lists, classes, inheritance and interfaces, maps, exceptions, generics, lambdas, streams,
@@ -63,8 +63,8 @@ where you are standing, so `(0, 1, 0)` is the block above your head.
 
 Lessons are data, not code. Each one is a pair of files in `src/main/resources/lessons/`:
 
-- `NN-name.json` — id, order, title, topic, `level` and the explanation paragraphs
-- `NN-name.java` — the starter code, as a real `.java` file so it stays readable
+- `NN-name.json`: id, order, title, topic, `level` and the explanation paragraphs
+- `NN-name.java`: the starter code, as a real `.java` file so it stays readable
 
 `level` is `FUNDAMENTALS`, `CORE` or `ADVANCED`, and decides which experience tracks show the
 lesson. Add both files, then list the `.json` in `lessons/index.json`. Nothing else changes.
@@ -89,7 +89,7 @@ hand.
 
 Your code is compiled in memory with `javax.tools.JavaCompiler` and run on a timeboxed daemon
 thread. Because a Fabric mod's classes are loaded by Knot rather than from `java.class.path`,
-javac cannot find `Playground` on a normal classpath — so the compiler is handed those classes
+javac cannot find `Playground` on a normal classpath, so the compiler is handed those classes
 directly out of the mod's own classloader. The whole `Playground` API is deliberately free of
 Minecraft types for the same reason; the Minecraft-aware implementation sits behind an interface.
 
@@ -105,4 +105,4 @@ Minecraft types for the same reason; the Minecraft-aware implementation sits beh
 ## Licence and trademarks
 
 MIT. Not affiliated with or endorsed by Mojang or Microsoft. CodeCraft ships no Minecraft
-assets — it uses only the public Fabric modding API against a copy of the game you already own.
+assets; it uses only the public Fabric modding API against a copy of the game you already own.
